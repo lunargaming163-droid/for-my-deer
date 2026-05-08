@@ -3,129 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Special One</title>
+    <title>Special Surprise for Ouan</title>
     <style>
-        /* CSS: ตกแต่งหน้าตา */
+        /* --- CSS: ส่วนตกแต่งให้สวยงาม --- */
+        
+        /* นำเข้า Font สวยๆ จาก Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #fdf2f8; /* สีชมพูอ่อนมากๆ ผ่อนคลาย */
+            --envelope-color: #f472b6; /* สีชมพูหลัก */
+            --envelope-dark: #db2777; /* สีชมพูเข้ม */
+            --text-color: #831843; /* สีตัวอักษรชมพูเข้มมาก */
+        }
+
         body {
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #ffcad4; /* สีชมพูอ่อน */
-            margin: 0;
-            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-color);
+            font-family: 'Sarabun', sans-serif; /* ใช้ Font ที่ดูดีขึ้น */
             overflow: hidden;
+            perspective: 1000px; /* เพิ่มมิติให้การหมุน */
         }
 
         .container {
+            position: relative;
             text-align: center;
             cursor: pointer;
         }
 
-        /* รูปซองจดหมาย */
-        .envelope {
+        /* --- ซองจดหมายดีไซน์ใหม่ --- */
+        .envelope-wrapper {
             position: relative;
-            width: 200px;
-            height: 140px;
-            background-color: #f08080;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            margin: 0 auto;
-            transition: 0.5s;
+            width: 280px; /* ขยายขนาด */
+            height: 180px;
+            background-color: var(--envelope-color);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
         }
 
-        .envelope::before {
-            content: "";
+        .envelope-wrapper:hover {
+            transform: translateY(-5px); /* เลื่อนขึ้นเล็กน้อยเวลามีเมาส์ชี้ */
+        }
+
+        /* ฝาพับซองจดหมาย */
+        .envelope-flap {
             position: absolute;
             top: 0;
             left: 0;
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-top: 100px solid #f4978e;
-            transition: 0.5s;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 100px solid var(--envelope-dark);
+            border-radius: 8px 8px 0 0;
             transform-origin: top;
-        }
-
-        /* เมื่อเอาเมาส์วาง หรือคลิก (ใช้ Class ช่วย) */
-        .container.open .envelope::before {
-            transform: rotateX(180deg);
-            z-index: 0;
-        }
-
-        /* ข้อความด้านใน */
-        .message {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 180px;
-            background: white;
-            padding: 10px;
-            font-size: 14px;
-            color: #d63384;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: 0.5s;
-            z-index: -1;
-            opacity: 0;
-        }
-
-        .container.open .message {
-            top: -80px;
-            opacity: 1;
+            transition: transform 0.6s ease-in-out, z-index 0.3s;
             z-index: 2;
         }
 
-        /* สไตล์หัวใจลอยๆ */
+        /* ส่วนหน้าของซองจดหมายที่ซ้อนทับ */
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid var(--envelope-color);
+            border-right: 140px solid var(--envelope-color);
+            border-top: 90px solid transparent; /* ปรับให้ดูนูนขึ้น */
+            border-bottom: 90px solid var(--envelope-color);
+            border-radius: 0 0 8px 8px;
+            z-index: 1;
+        }
+
+        /* --- กระดาษจดหมายด้านใน --- */
+        .letter {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 80%;
+            background: white;
+            border-radius: 4px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.6s ease-in-out, opacity 0.4s;
+            z-index: 0;
+            opacity: 0;
+            text-align: left;
+            color: var(--text-color);
+        }
+
+        .letter-content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .letter-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* --- สเตตัสเมื่อซองจดหมายถูกเปิด --- */
+        .container.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0; /* เอาฝาไปไว้หลังกระดาษ */
+        }
+
+        .container.open .letter {
+            transform: translate(-50%, -100px); /* เลื่อนกระดาษขึ้นมา */
+            opacity: 1;
+            z-index: 2; /* เอากระดาษมาไว้หน้าสุด */
+        }
+
+        /* --- คำเชิญชวน --- */
+        .instruction {
+            margin-top: 30px;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+        /* --- สไตล์หัวใจลอยๆ (สวยกว่าเดิม) --- */
         .heart {
             position: absolute;
-            color: #ff4d6d;
-            font-size: 20px;
+            color: #ec4899; /* สีชมพูเข้มสะใจ */
             user-select: none;
-            animation: moveUp 3s linear forwards;
+            pointer-events: none;
+            animation: moveUpAndFade 4s linear forwards;
+            opacity: 0;
         }
 
-        @keyframes moveUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        @keyframes moveUpAndFade {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-110vh) scale(1.5) rotate(360deg); opacity: 0; }
         }
 
-        h2 {
-            color: white;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
 
-    <div class="container" onclick="openSurprise(this)">
-        <div class="envelope">
-            <div class="message">
-                <strong>ถึงที่รัก... ❤️</strong><br>
-                ขอบคุณที่อยู่ข้างกันนะ<br>
-                รักคุณที่สุดในโลกเลย!
+    <div class="container" id="surpriseContainer">
+        <div class="envelope-wrapper">
+            <div class="envelope-flap"></div>
+            <div class="letter">
+                <div class="letter-content">
+                    <div class="letter-title">ถึง เจ้าอ้วน... ❤️</div>
+                    <p>
+                        ก็นั่นแหละ... แค่อยากจะบอกว่า<br>
+                        ดีใจนะที่มีอ้วนอยู่ด้วยกันแบบนี้<br>
+                        ขอบคุณที่ทนความกวนประสาท (และทนหิวพร้อมกัน) นะ<br>
+                        <br>
+                        <strong>รักอ้วนที่สุดในโลกเลย!</strong>
+                    </p>
+                </div>
             </div>
+            <div class="envelope-front"></div>
         </div>
-        <h2>คลิกที่ซองจดหมายสิ! ✨</h2>
+        <div class="instruction">คลิกที่ซองจดหมายสิ! ✨</div>
     </div>
 
     <script>
-        // JavaScript: เพิ่มลูกเล่น
-        function openSurprise(element) {
-            // เปิดซองจดหมาย
-            element.classList.toggle('open');
+        // --- JavaScript: เพิ่มลูกเล่นและความต่อเนื่อง ---
+        
+        const container = document.getElementById('surpriseContainer');
+        const instruction = document.querySelector('.instruction');
+        let heartsInterval;
 
-            // สร้างหัวใจลอยขึ้นมาเรื่อยๆ
-            if(element.classList.contains('open')) {
-                setInterval(createHeart, 300);
+        container.addEventListener('click', function() {
+            // สลับ Class เพื่อเปิด/ปิดซองจดหมาย
+            this.classList.toggle('open');
+
+            if(this.classList.contains('open')) {
+                // ถ้าเปิดซอง: ซ่อนคำแนะนำ และเริ่มสร้างหัวใจ
+                instruction.style.opacity = '0';
+                instruction.style.transition = '0.3s';
+                
+                // สร้างหัวใจทันที 5 ดวง
+                for(let i=0; i<5; i++) {
+                    createHeart();
+                }
+                
+                // และสร้างต่อเรื่อยๆ ทุกๆ 0.4 วินาที
+                heartsInterval = setInterval(createHeart, 400);
+            } else {
+                // ถ้าปิดซอง: แสดงคำแนะนำคืน และหยุดสร้างหัวใจ
+                instruction.style.opacity = '1';
+                clearInterval(heartsInterval);
             }
-        }
+        });
 
+        // ฟังก์ชันสร้างหัวใจ (ปรับปรุงให้สวยขึ้นและกระจายตัวดีขึ้น)
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
-            heart.innerHTML = '❤️';
+            
+            // สุ่มเลือกไอคอนหัวใจหลายๆ แบบ
+            const heartTypes = ['❤️', '💖', '💗', '💕'];
+            heart.innerHTML = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+            
+            // สุ่มตำแหน่งเริ่มต้น (กระจายเต็มหน้าจอ)
             heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.bottom = '-50px'; // เริ่มจากล่างจอ
+            
+            // สุ่มขนาด (ให้ดูมีมิติ)
+            const size = Math.random() * 20 + 15 + 'px';
+            heart.style.fontSize = size;
+            
+            // สุ่มระยะเวลา Animation
             heart.style.animationDuration = (Math.random() * 2 + 3) + 's'; 
             
             document.body.appendChild(heart);
@@ -133,7 +232,7 @@
             // ลบ Element เมื่อจบ Animation เพื่อไม่ให้เครื่องค้าง
             setTimeout(() => {
                 heart.remove();
-            }, 5000);
+            }, 6000);
         }
     </script>
 </body>
